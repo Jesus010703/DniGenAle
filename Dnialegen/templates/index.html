@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Generador y Validador de DNI (Luhn)</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            font-family: 'Segoe UI', sans-serif;
+            color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: #1b2838;
+            text-align: center;
+            padding: 20px;
+            font-size: 1.8em;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        }
+
+        main {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            padding: 40px;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .panel {
+            background: #2e3b4e;
+            padding: 25px;
+            border-radius: 12px;
+            width: 45%;
+            min-width: 350px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        h3 {
+            color: #00bcd4;
+            border-bottom: 2px solid #00bcd4;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #607d8b;
+            background-color: #1b2838;
+            color: #fff;
+            font-size: 1em;
+        }
+
+        button {
+            background: #00bcd4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #0097a7;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background: #37474f;
+            padding: 8px;
+            border-radius: 6px;
+            margin-bottom: 5px;
+            font-family: monospace;
+        }
+
+        .resultado {
+            background: #263238;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .error {
+            color: #ff5252;
+            background: #3e2723;
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            background: #1b2838;
+            color: #90a4ae;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <header>Generador y Validador de DNI (Luhn)</header>
+
+    <main>
+        <!-- PANEL IZQUIERDO: GENERADOR -->
+        <div class="panel">
+            <form method="post">
+                <h3>🧮 Generar DNIs válidos</h3>
+                <label for="cantidad">Cantidad a generar:</label>
+                <input type="number" name="cantidad" id="cantidad" value="10" min="1" max="100">
+                <button type="submit" name="generar">Generar</button>
+            </form>
+
+            {% if resultados %}
+                <div class="resultado">
+                    <h4>DNIs generados:</h4>
+                    <ul>
+                        {% for dni in resultados %}
+                            <li>{{ dni }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- PANEL DERECHO: VALIDAR DNI -->
+        <div class="panel">
+            <form method="post">
+                <h3>🔍 Consultar DNI (API externa)</h3>
+                <label for="dni_buscar">Número de DNI:</label>
+                <input type="text" name="dni_buscar" id="dni_buscar" maxlength="8" placeholder="Ejemplo: 12345678" required>
+                <button type="submit" name="consultar">Consultar</button>
+            </form>
+
+            {% if datos_dni %}
+                <div class="resultado">
+                    {% if datos_dni.error %}
+                        <p class="error">{{ datos_dni.error }}</p>
+                    {% else %}
+                        <h4>Información encontrada:</h4>
+                        <pre>{{ datos_dni | tojson(indent=2) }}</pre>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <footer>© 2025 | Sistema Generador y Validador de DNIs</footer>
+</body>
+</html>
